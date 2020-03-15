@@ -48,7 +48,7 @@ public class HomeController {
 
     @PostMapping("add")
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
-                                       Errors errors, Model model, @RequestParam int employerId, @RequestParam(required = false) List<Integer> skills) {
+                                       Errors errors, Model model, @RequestParam(required = false) Integer employerId, @RequestParam(required = false) List<Integer> skills) {
 
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Job");
@@ -56,18 +56,32 @@ public class HomeController {
             model.addAttribute("skills",skillRepository.findAll());
             return "add";
         }
+        if(employerId ==null){
+            model.addAttribute("employerError","Add employer first");
+            model.addAttribute("title", "Add Job");
+            model.addAttribute("employers",employerRepository.findAll());
+            model.addAttribute("skills",skillRepository.findAll());
+            return "add";}
         Optional<Employer> result = employerRepository.findById(employerId);
         if(result.isPresent()){
             Employer employer = result.get();
             newJob.setEmployer(employer);
-            List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-            if(skillObjs.size()>0){
+
+            if(skills!=null&&skills.size()>0){
+                List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
                 newJob.setSkills(skillObjs);
                 jobRepository.save(newJob);
             }else {
+               model.addAttribute("skillsError","At least on skill is required");
+                model.addAttribute("title", "Add Job");
+                model.addAttribute("employers",employerRepository.findAll());
+                model.addAttribute("skills",skillRepository.findAll());
                 return "add";
             }
         }else {
+            model.addAttribute("title", "Add Job");
+            model.addAttribute("employers",employerRepository.findAll());
+            model.addAttribute("skills",skillRepository.findAll());
             return "add";
         }
         return "redirect:";
