@@ -16,7 +16,7 @@ FROM employer
 WHERE location = 'St. Louis City'
 
 ## Part 3: Test it with SQL
-DROP TABLE job;
+DROP TABLE techjobs.job;
 
 ## Part 4: Test it with SQL
 SELECT DISTINCT skill.name as NAME, skill.description as DESCRIPTION
