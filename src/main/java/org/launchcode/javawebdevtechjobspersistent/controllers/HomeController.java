@@ -50,46 +50,28 @@ public class HomeController {
     public String processAddJobForm(@ModelAttribute @Valid Job newJob,
                                        Errors errors, Model model, @RequestParam(required = false) Integer employerId, @RequestParam(required = false) List<Integer> skills) {
 
-        if (errors.hasErrors()) {
+        if (errors.hasErrors() || skills == null || employerId == null) {
             model.addAttribute("title", "Add Job");
-            model.addAttribute("employers",employerRepository.findAll());
-            model.addAttribute("skills",skillRepository.findAll());
-            if(skills==null){
-                model.addAttribute("skillsError","At least one skill is required");
+            model.addAttribute("employers", employerRepository.findAll());
+            model.addAttribute("skills", skillRepository.findAll());
+            if (skills == null) {
+                model.addAttribute("skillsError", "At least one skill is required");
             }
-            if(employerId==null){
-                model.addAttribute("employerError","Add employer first");
+            if (employerId == null) {
+                model.addAttribute("employerError", "Add employer first");
             }
             return "add";
         }
-        if(employerId ==null){
-            model.addAttribute("employerError","Add employer first");
-            model.addAttribute("title", "Add Job");
-            model.addAttribute("employers",employerRepository.findAll());
-            model.addAttribute("skills",skillRepository.findAll());
-            return "add";}
+
         Optional<Employer> result = employerRepository.findById(employerId);
-        if(result.isPresent()){
+        if (result.isPresent()) {
             Employer employer = result.get();
             newJob.setEmployer(employer);
-
-            if(skills!=null&&skills.size()>0){
-                List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
-                newJob.setSkills(skillObjs);
-                jobRepository.save(newJob);
-            }else {
-               model.addAttribute("skillsError","At least one skill is required");
-                model.addAttribute("title", "Add Job");
-                model.addAttribute("employers",employerRepository.findAll());
-                model.addAttribute("skills",skillRepository.findAll());
-                return "add";
-            }
-        }else {
-            model.addAttribute("title", "Add Job");
-            model.addAttribute("employers",employerRepository.findAll());
-            model.addAttribute("skills",skillRepository.findAll());
-            return "add";
         }
+        List<Skill> skillObjs = (List<Skill>) skillRepository.findAllById(skills);
+        newJob.setSkills(skillObjs);
+        jobRepository.save(newJob);
+
         return "redirect:";
     }
 

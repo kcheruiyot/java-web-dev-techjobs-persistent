@@ -8,13 +8,13 @@
 <h1>Add Job</h1>
 
 <form method="post" style="max-width:600px;">
-    <p th:text="${employerError}" class="error"></p>
+
     <div class="form-group">
         <label th:for="name">Name</label>
         <input class="form-control" th:field="${job.name}" />
         <span th:errors="${job.name}" class="error"></span>
     </div>
-
+    <p class="error" th:text="${employerError}"></p>
     <div class="form-group">
         <label th:for="employer">Employer</label>
         <select name="employerId">
