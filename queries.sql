@@ -19,7 +19,7 @@ WHERE location = 'St. Louis City'
 DROP TABLE techjobs.job;
 
 ## Part 4: Test it with SQL
-SELECT DISTINCT skill.name as NAME, skill.description as DESCRIPTION
-FROM job_skills,job,skill
-WHERE job_skills.skills_id=skill.id AND job_skills.jobs_id=job.id
-ORDER BY NAME, DESCRIPTION ASC;
+select distinct name,description
+from skill,job_skills
+where skill.id=job_skills.skills_id and job_skills.jobs_id is not null
+order by name asc;
